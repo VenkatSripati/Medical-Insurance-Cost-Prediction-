@@ -1,0 +1,647 @@
+{% extends 'modern/base.html' %}
+
+{% block title %}Medical Cost Prediction - Home{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        padding: 3rem 0;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+        max-width: 800px;
+        margin: 0 auto 1.5rem;
+    }
+
+    .hero-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .hero-actions .btn {
+        min-width: 150px;
+        transition: all 0.3s ease;
+    }
+
+    .hero-actions .btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-teal {
+        background: linear-gradient(135deg, var(--accent-color), var(--accent-dark));
+        border-color: var(--accent-color);
+        color: white;
+    }
+
+    .btn-teal:hover {
+        background: linear-gradient(135deg, var(--accent-dark), var(--accent-color));
+        border-color: var(--accent-dark);
+        box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .feature-card {
+        text-align: center;
+        padding: 1.5rem;
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .linear-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .linear-form .form-control,
+    .linear-form .select-wrapper,
+    .linear-form .input-with-icon {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Make all form fields the same width */
+    .linear-form .form-group {
+        width: 100%;
+    }
+
+    .bmi-calculator-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .bmi-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 1rem;
+        align-items: end;
+        width: 100%;
+    }
+
+    .bmi-grid-item {
+        width: 100%;
+    }
+
+    .bmi-label {
+        display: block;
+        margin-bottom: 0.6rem;
+        font-weight: 500;
+        color: var(--text-color);
+        width: 100%;
+    }
+
+    .bmi-button-container {
+        padding-bottom: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .bmi-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .bmi-button-container {
+            padding-bottom: 0;
+            margin-top: 0.5rem;
+        }
+
+        .bmi-button-container .btn {
+            width: 100%;
+        }
+    }
+
+    .input-with-unit {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .input-with-unit .form-control {
+        padding-right: 3rem;
+        background-color: var(--neutral-dark);
+        border-color: var(--neutral-light);
+        color: #e2e8f0;
+        width: 100%;
+    }
+
+    .input-with-unit .form-control:focus {
+        background-color: var(--neutral-color);
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+    }
+
+    .input-with-unit .unit {
+        position: absolute;
+        right: 1rem;
+        color: #a0aec0;
+    }
+
+    @media (max-width: 768px) {
+        .bmi-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .bmi-col {
+            width: 100%;
+            padding-right: 0;
+            margin-bottom: 1rem;
+        }
+
+        .bmi-button-col {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .bmi-button-col .btn {
+            width: 100%;
+        }
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: -0.75rem;
+    }
+
+    .form-col {
+        flex: 1;
+        min-width: 250px;
+        padding: 0.75rem;
+    }
+
+    .bmi-result-card {
+        background-color: var(--card-bg);
+        border-radius: 8px;
+        padding: 1.5rem;
+        text-align: center;
+        margin-top: 1.5rem;
+        box-shadow: 0 4px 6px var(--shadow-color);
+    }
+
+    .bmi-result {
+        margin-top: 0.5rem;
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        background: linear-gradient(135deg, rgba(94, 96, 206, 0.05), rgba(100, 223, 223, 0.05));
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.5s ease;
+        border: 1px solid rgba(94, 96, 206, 0.1);
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .bmi-value {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .bmi-category {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+
+    .category-success {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: var(--success-color);
+    }
+
+    .category-warning {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: var(--warning-color);
+    }
+
+    .category-danger {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: var(--danger-color);
+    }
+
+    .category-info {
+        background-color: rgba(23, 162, 184, 0.1);
+        color: var(--info-color);
+    }
+
+    .form-error {
+        color: var(--danger-color);
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: none;
+    }
+
+    .input-with-icon {
+        position: relative;
+    }
+
+    .input-with-icon .form-control {
+        padding-right: 2.5rem;
+    }
+
+    .input-icon {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+    }
+
+    .select-wrapper {
+        position: relative;
+    }
+
+    .select-wrapper::after {
+        content: '\f107';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    select.form-control {
+        appearance: none;
+        padding-right: 2.5rem;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 2rem;
+        }
+
+        .hero p {
+            font-size: 1rem;
+        }
+
+        .tabs {
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Medical Cost Prediction</h1>
+        <p>Estimate your medical insurance costs using our advanced machine learning model. Get accurate predictions based on your personal information.</p>
+        <div class="hero-actions">
+            <a href="#prediction-section" class="btn btn-primary">Get Started</a>
+            <a href="/about" class="btn btn-secondary">Learn More</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="feature-card card">
+        <div class="feature-icon">
+            <i class="fas fa-calculator"></i>
+        </div>
+        <h3>BMI Calculator</h3>
+        <p>Calculate your Body Mass Index (BMI) to understand your health status and how it affects your insurance costs.</p>
+    </div>
+
+    <div class="feature-card card">
+        <div class="feature-icon">
+            <i class="fas fa-chart-line"></i>
+        </div>
+        <h3>Cost Prediction</h3>
+        <p>Our machine learning model analyzes multiple factors to predict your medical insurance costs with high accuracy.</p>
+    </div>
+
+    <div class="feature-card card">
+        <div class="feature-icon">
+            <i class="fas fa-history"></i>
+        </div>
+        <h3>Prediction History</h3>
+        <p>Keep track of your previous predictions and see how changes in your health factors affect your insurance costs.</p>
+    </div>
+</section>
+
+<!-- Main Content -->
+<section id="prediction-section" class="card">
+    <h2 class="card-title">Predict Your Medical Insurance Cost</h2>
+    <p>Fill in the form below to get an estimate of your medical insurance costs based on various factors.</p>
+
+    <form id="prediction-form" action="/predict" method="post">
+        <div class="linear-form">
+            <div class="form-group">
+                <label for="age" class="form-label">Age</label>
+                <input type="number" id="age" name="age" class="form-control" placeholder="Enter your age" min="1" max="120" required>
+                <div id="age-error" class="form-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="gender" class="form-label">Gender</label>
+                <div class="select-wrapper">
+                    <select id="gender" name="gender" class="form-control" required>
+                        <option value="" disabled selected>Select your gender</option>
+                        <option value="0">Male</option>
+                        <option value="1">Female</option>
+                    </select>
+                </div>
+                <div id="gender-error" class="form-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="children" class="form-label">Number of Children</label>
+                <input type="number" id="children" name="children" class="form-control" placeholder="Number of children" min="0" max="10" required>
+                <div id="children-error" class="form-error"></div>
+            </div>
+
+            <!-- BMI Calculator integrated with BMI input -->
+            <div class="form-group">
+                <label for="bmi-input" class="form-label">BMI (Body Mass Index)</label>
+                <div class="input-with-icon">
+                    <input type="number" id="bmi-input" name="bmi" class="form-control" placeholder="Calculate your BMI below" step="0.1" min="10" max="50" required readonly>
+                    <span class="input-icon"><i class="fas fa-calculator"></i></span>
+                </div>
+                <div id="bmi-error" class="form-error"></div>
+            </div>
+
+            <!-- BMI Calculator inputs -->
+            <div class="bmi-calculator-section">
+                <div class="bmi-grid">
+                    <div class="bmi-grid-item">
+                        <label for="weight" class="bmi-label">Weight (kg)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="weight" class="form-control" placeholder="Enter your weight" step="0.1" min="1">
+                            <span class="unit">kg</span>
+                        </div>
+                    </div>
+
+                    <div class="bmi-grid-item">
+                        <label for="height" class="bmi-label">Height (cm)</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="height" class="form-control" placeholder="Enter your height" step="0.1" min="1">
+                            <span class="unit">cm</span>
+                        </div>
+                    </div>
+
+                    <div class="bmi-grid-item bmi-button-container">
+                        <button id="calculate-bmi" class="btn btn-teal">Calculate BMI</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BMI Result will appear here -->
+            <div id="bmi-result" style="display: none;" class="bmi-result">
+                <div id="bmi-value" class="bmi-value">0.0</div>
+                <div id="bmi-category" class="bmi-category category-info">Category</div>
+                <div class="bmi-info">
+                    <p>BMI Categories:</p>
+                    <ul>
+                        <li>Underweight: BMI less than 18.5</li>
+                        <li>Normal weight: BMI 18.5 to 24.9</li>
+                        <li>Overweight: BMI 25 to 29.9</li>
+                        <li>Obese: BMI 30 or greater</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="smoker" class="form-label">Do you smoke?</label>
+                <div class="select-wrapper">
+                    <select id="smoker" name="smoker" class="form-control" required>
+                        <option value="" disabled selected>Select an option</option>
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                <div id="smoker-error" class="form-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="region" class="form-label">Region</label>
+                <div class="select-wrapper">
+                    <select id="region" name="region" class="form-control" required>
+                        <option value="" disabled selected>Select your region</option>
+                        <option value="0">Northwest</option>
+                        <option value="1">Northeast</option>
+                        <option value="2">Southeast</option>
+                        <option value="3">Southwest</option>
+                    </select>
+                </div>
+                <div id="region-error" class="form-error"></div>
+            </div>
+
+            <div class="form-group" style="text-align: center; margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary">Predict Cost</button>
+            </div>
+        </div>
+    </form>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // BMI Calculator functionality
+        const weightInput = document.getElementById('weight');
+        const heightInput = document.getElementById('height');
+        const calculateBmiBtn = document.getElementById('calculate-bmi');
+        const bmiResult = document.getElementById('bmi-result');
+        const bmiValue = document.getElementById('bmi-value');
+        const bmiCategory = document.getElementById('bmi-category');
+        const bmiInput = document.getElementById('bmi-input');
+
+        // Make BMI input readonly until BMI is calculated
+        if (bmiInput) {
+            bmiInput.readOnly = true;
+        }
+
+        // Highlight the BMI calculator section to encourage users to calculate BMI first
+        if (weightInput) {
+            weightInput.focus();
+        }
+
+        // Calculate BMI when button is clicked
+        if (calculateBmiBtn) {
+            calculateBmiBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                calculateBMI();
+            });
+        }
+
+        // Real-time BMI calculation as user types (with debounce)
+        if (weightInput && heightInput) {
+            weightInput.addEventListener('input', debounce(calculateBMI, 500));
+            heightInput.addEventListener('input', debounce(calculateBMI, 500));
+        }
+
+        function calculateBMI() {
+            const weight = parseFloat(weightInput.value);
+            const height = parseFloat(heightInput.value);
+
+            if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
+                if (bmiResult) bmiResult.style.display = 'none';
+                return;
+            }
+
+            // Calculate BMI: weight (kg) / (height (m))^2
+            const heightInMeters = height / 100;
+            const bmi = weight / (heightInMeters * heightInMeters);
+            const roundedBMI = Math.round(bmi * 10) / 10;
+
+            // Display result
+            if (bmiValue) bmiValue.textContent = roundedBMI.toFixed(1);
+
+            // Determine category
+            let category, categoryClass;
+            if (bmi < 18.5) {
+                category = 'Underweight';
+                categoryClass = 'category-warning';
+            } else if (bmi < 25) {
+                category = 'Normal weight';
+                categoryClass = 'category-success';
+            } else if (bmi < 30) {
+                category = 'Overweight';
+                categoryClass = 'category-warning';
+            } else {
+                category = 'Obese';
+                categoryClass = 'category-danger';
+            }
+
+            if (bmiCategory) {
+                bmiCategory.textContent = category;
+                bmiCategory.className = 'bmi-category ' + categoryClass;
+            }
+
+            // Show result with animation
+            if (bmiResult) {
+                bmiResult.style.display = 'block';
+                bmiResult.style.opacity = '0';
+                bmiResult.style.transform = 'translateY(20px)';
+
+                // Trigger animation after a small delay
+                setTimeout(() => {
+                    bmiResult.style.opacity = '1';
+                    bmiResult.style.transform = 'translateY(0)';
+                }, 50);
+            }
+
+            // Update BMI input in prediction form with highlight effect
+            if (bmiInput) {
+                bmiInput.value = roundedBMI.toFixed(1);
+                bmiInput.readOnly = true;
+
+                // Add highlight effect
+                bmiInput.style.backgroundColor = 'rgba(94, 96, 206, 0.1)';
+                bmiInput.style.borderColor = 'var(--primary-color)';
+                bmiInput.style.color = 'var(--primary-color)';
+                bmiInput.style.fontWeight = 'bold';
+
+                // Scroll to next field after BMI calculation
+                const smokerSelect = document.getElementById('smoker');
+                if (smokerSelect) {
+                    setTimeout(() => {
+                        smokerSelect.focus();
+                    }, 800);
+                }
+            }
+        }
+
+        // Form validation
+        const predictionForm = document.getElementById('prediction-form');
+        const loadingOverlay = document.getElementById('loading-overlay');
+
+        if (predictionForm) {
+            predictionForm.addEventListener('submit', function(e) {
+                if (!validateForm()) {
+                    e.preventDefault();
+                } else if (loadingOverlay) {
+                    // Show loading spinner
+                    loadingOverlay.style.display = 'flex';
+                }
+            });
+        }
+
+        function validateForm() {
+            let isValid = true;
+            const inputs = predictionForm.querySelectorAll('input:not([readonly]), select');
+
+            inputs.forEach(input => {
+                const errorElement = document.getElementById(`${input.id}-error`);
+
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add('error');
+                    if (errorElement) {
+                        errorElement.textContent = 'This field is required';
+                        errorElement.style.display = 'block';
+                    }
+                } else {
+                    input.classList.remove('error');
+                    if (errorElement) {
+                        errorElement.style.display = 'none';
+                    }
+                }
+            });
+
+            return isValid;
+        }
+
+        // Utility function to debounce input events
+        function debounce(func, wait) {
+            let timeout;
+            return function() {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {
+                    func.apply(context, args);
+                }, wait);
+            };
+        }
+    });
+</script>
+{% endblock %}

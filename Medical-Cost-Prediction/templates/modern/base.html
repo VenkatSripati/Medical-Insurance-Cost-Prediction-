@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" style="scroll-behavior: smooth;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Medical Cost Prediction{% endblock %}</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom/modern.css') }}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="/" class="logo">
+                    <i class="fas fa-heartbeat"></i> MediCost Predictor
+                </a>
+
+                <ul class="nav-links">
+                    <li><a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
+                    <li><a href="/about" class="{% if request.path == '/about' %}active{% endif %}">About</a></li>
+                    <li><a href="/history" class="{% if request.path == '/history' %}active{% endif %}">History</a></li>
+                    <li>
+                        <button id="theme-toggle" class="theme-toggle" title="Toggle dark/light mode">
+                            <i id="theme-icon" class="fas fa-moon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About</h3>
+                    <p>MediCost Predictor uses machine learning to estimate medical insurance costs based on various factors.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/history">History</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-github"></i> GitHub</a></li>
+                        <li><a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+                        <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 MediCost Predictor | Created by Venkat and team</p>
+                <div class="creator-badge">
+                    <span>Professional Healthcare Solutions</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+        <p>Processing your request...</p>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/custom/app.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

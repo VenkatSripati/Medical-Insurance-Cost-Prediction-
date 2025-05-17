@@ -1,0 +1,201 @@
+{% extends 'modern/base.html' %}
+
+{% block title %}Medical Cost Prediction - History{% endblock %}
+
+{% block extra_css %}
+<style>
+    .history-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .history-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .prediction-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .prediction-item {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        border-radius: 8px;
+        background-color: var(--card-bg);
+        box-shadow: 0 4px 6px var(--shadow-color);
+        transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    }
+    
+    .prediction-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px var(--shadow-color);
+    }
+    
+    .prediction-amount {
+        flex: 1;
+        min-width: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+        background-color: rgba(74, 107, 175, 0.1);
+        border-radius: 8px;
+    }
+    
+    .amount-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+    
+    .amount-date {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+    }
+    
+    .prediction-details {
+        flex: 2;
+        min-width: 300px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1rem;
+    }
+    
+    .detail-item {
+        text-align: center;
+    }
+    
+    .detail-label {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        margin-bottom: 0.25rem;
+    }
+    
+    .detail-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+    
+    .empty-history {
+        text-align: center;
+        padding: 3rem;
+    }
+    
+    .empty-icon {
+        font-size: 4rem;
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .prediction-amount {
+            width: 100%;
+        }
+        
+        .prediction-details {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="history-container">
+    <div class="history-header">
+        <h1>Your Prediction History</h1>
+        {% if predictions %}
+        <button id="clear-history" class="btn btn-secondary">Clear History</button>
+        {% endif %}
+    </div>
+    
+    {% if predictions %}
+    <div class="prediction-list">
+        {% for prediction in predictions %}
+        <div class="prediction-item">
+            <div class="prediction-amount">
+                <div class="amount-value">${{ "%.2f"|format(prediction.amount) }}</div>
+                <div class="amount-date">{{ prediction.timestamp }}</div>
+            </div>
+            
+            <div class="prediction-details">
+                <div class="detail-item">
+                    <div class="detail-label">Age</div>
+                    <div class="detail-value">{{ prediction.features.age }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Gender</div>
+                    <div class="detail-value">{{ prediction.features.gender }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">BMI</div>
+                    <div class="detail-value">{{ prediction.features.bmi }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Children</div>
+                    <div class="detail-value">{{ prediction.features.children }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Smoker</div>
+                    <div class="detail-value">{{ prediction.features.smoker }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Region</div>
+                    <div class="detail-value">{{ prediction.features.region }}</div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card empty-history">
+        <div class="empty-icon">
+            <i class="fas fa-history"></i>
+        </div>
+        <h2>No Predictions Yet</h2>
+        <p>You haven't made any predictions yet. Go to the home page to make your first prediction.</p>
+        <a href="/" class="btn btn-primary">Make a Prediction</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const clearHistoryBtn = document.getElementById('clear-history');
+        
+        if (clearHistoryBtn) {
+            clearHistoryBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to clear your prediction history?')) {
+                    fetch('/clear-history', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        }
+                    });
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

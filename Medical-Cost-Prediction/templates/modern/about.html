@@ -1,0 +1,183 @@
+{% extends 'modern/base.html' %}
+
+{% block title %}Medical Cost Prediction - About{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .about-section {
+        margin-bottom: 3rem;
+    }
+    
+    .about-section h2 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .model-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .model-card {
+        background-color: rgba(74, 107, 175, 0.1);
+        padding: 1.5rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+    
+    .model-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .model-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .tech-stack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .tech-item {
+        background-color: var(--card-bg);
+        padding: 0.75rem 1.5rem;
+        border-radius: 30px;
+        box-shadow: 0 2px 4px var(--shadow-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .tech-icon {
+        font-size: 1.25rem;
+        color: var(--primary-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <section class="about-section card">
+        <h2>About This Project</h2>
+        
+        <p>The Medical Cost Prediction application is designed to estimate medical insurance costs based on various personal factors. This project demonstrates the application of machine learning in the healthcare insurance domain.</p>
+        
+        <p>The prediction model analyzes several key factors that influence insurance costs, including age, BMI, number of children, smoking status, and geographic region. By understanding these factors, users can gain insights into what affects their insurance premiums.</p>
+        
+        <div class="model-info">
+            <div class="model-card">
+                <div class="model-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="model-title">Random Forest Regressor</div>
+                <p>Our prediction model uses a Random Forest algorithm, which combines multiple decision trees to make accurate predictions.</p>
+            </div>
+            
+            <div class="model-card">
+                <div class="model-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="model-title">86% Accuracy</div>
+                <p>The model achieves an R² score of 0.86, indicating strong predictive performance on insurance cost data.</p>
+            </div>
+            
+            <div class="model-card">
+                <div class="model-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="model-title">Real-World Data</div>
+                <p>Trained on a dataset of real medical insurance costs to provide realistic estimates.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="about-section card">
+        <h2>Features</h2>
+        
+        <ul>
+            <li><strong>BMI Calculator:</strong> Calculate your Body Mass Index directly in the application</li>
+            <li><strong>Cost Prediction:</strong> Get an estimate of your medical insurance costs</li>
+            <li><strong>Dark/Light Mode:</strong> Choose your preferred theme for comfortable viewing</li>
+            <li><strong>Prediction History:</strong> Keep track of your previous predictions</li>
+            <li><strong>Data Visualization:</strong> See how different factors affect your insurance costs</li>
+            <li><strong>Responsive Design:</strong> Works on desktop, tablet, and mobile devices</li>
+        </ul>
+    </section>
+    
+    <section class="about-section card">
+        <h2>Technology Stack</h2>
+        
+        <p>This application was built using modern web technologies and machine learning tools:</p>
+        
+        <div class="tech-stack">
+            <div class="tech-item">
+                <span class="tech-icon"><i class="fab fa-python"></i></span>
+                <span>Python</span>
+            </div>
+            
+            <div class="tech-item">
+                <span class="tech-icon"><i class="fas fa-flask"></i></span>
+                <span>Flask</span>
+            </div>
+            
+            <div class="tech-item">
+                <span class="tech-icon"><i class="fab fa-js"></i></span>
+                <span>JavaScript</span>
+            </div>
+            
+            <div class="tech-item">
+                <span class="tech-icon"><i class="fab fa-css3-alt"></i></span>
+                <span>CSS3</span>
+            </div>
+            
+            <div class="tech-item">
+                <span class="tech-icon"><i class="fab fa-html5"></i></span>
+                <span>HTML5</span>
+            </div>
+            
+            <div class="tech-item">
+                <span class="tech-icon"><i class="fas fa-chart-bar"></i></span>
+                <span>Chart.js</span>
+            </div>
+            
+            <div class="tech-item">
+                <span class="tech-icon"><i class="fas fa-brain"></i></span>
+                <span>scikit-learn</span>
+            </div>
+            
+            <div class="tech-item">
+                <span class="tech-icon"><i class="fas fa-calculator"></i></span>
+                <span>NumPy</span>
+            </div>
+        </div>
+    </section>
+    
+    <section class="about-section card">
+        <h2>Developer Information</h2>
+        
+        <p>This project was developed by a 3rd-year Computer Science student as part of a machine learning and web development portfolio. The application demonstrates skills in:</p>
+        
+        <ul>
+            <li>Machine Learning Model Development</li>
+            <li>Web Application Development</li>
+            <li>User Interface Design</li>
+            <li>Data Visualization</li>
+            <li>Responsive Web Design</li>
+        </ul>
+        
+        <p>For more information or to view the source code, visit the project's GitHub repository.</p>
+    </section>
+</div>
+{% endblock %}

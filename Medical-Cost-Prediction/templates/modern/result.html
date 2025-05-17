@@ -1,0 +1,221 @@
+{% extends 'modern/base.html' %}
+
+{% block title %}Medical Cost Prediction - Result{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .result-card {
+        text-align: center;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .result-amount {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .result-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .detail-item {
+        background-color: rgba(74, 107, 175, 0.1);
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+    
+    .detail-label {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+    }
+    
+    .detail-value {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+    
+    .chart-container {
+        margin-top: 2rem;
+        height: 300px;
+    }
+    
+    .actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+        .result-amount {
+            font-size: 2.5rem;
+        }
+        
+        .detail-value {
+            font-size: 1.1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    <div class="card result-card">
+        <h2 class="card-title">Your Medical Insurance Cost Prediction</h2>
+        
+        <div class="result-amount">{{ formatted_amount }}</div>
+        
+        <p>Based on the information you provided, we estimate your annual medical insurance cost to be <strong>{{ formatted_amount }}</strong>.</p>
+        
+        <div class="result-details">
+            <div class="detail-item">
+                <div class="detail-label">Age</div>
+                <div class="detail-value">{{ prediction.features.age }}</div>
+            </div>
+            
+            <div class="detail-item">
+                <div class="detail-label">Gender</div>
+                <div class="detail-value">{{ prediction.features.gender }}</div>
+            </div>
+            
+            <div class="detail-item">
+                <div class="detail-label">BMI</div>
+                <div class="detail-value">{{ prediction.features.bmi }}</div>
+            </div>
+            
+            <div class="detail-item">
+                <div class="detail-label">Children</div>
+                <div class="detail-value">{{ prediction.features.children }}</div>
+            </div>
+            
+            <div class="detail-item">
+                <div class="detail-label">Smoker</div>
+                <div class="detail-value">{{ prediction.features.smoker }}</div>
+            </div>
+            
+            <div class="detail-item">
+                <div class="detail-label">Region</div>
+                <div class="detail-value">{{ prediction.features.region }}</div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="result-chart"></canvas>
+        </div>
+        
+        <div class="actions">
+            <a href="/" class="btn btn-primary">Make Another Prediction</a>
+            <a href="/history" class="btn btn-secondary">View History</a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2 class="card-title">Understanding Your Prediction</h2>
+        
+        <p>Several factors influence your medical insurance costs:</p>
+        
+        <ul>
+            <li><strong>Age:</strong> Insurance costs typically increase with age due to higher health risks.</li>
+            <li><strong>BMI:</strong> Higher BMI values often correlate with increased health risks and higher insurance costs.</li>
+            <li><strong>Smoking:</strong> Smoking significantly increases insurance costs due to associated health risks.</li>
+            <li><strong>Children:</strong> The number of dependents affects family coverage costs.</li>
+            <li><strong>Region:</strong> Healthcare costs vary by geographic location.</li>
+        </ul>
+        
+        <p>Our prediction model analyzes these factors to estimate your insurance costs based on patterns in real insurance data.</p>
+        
+        <h3>How to Potentially Lower Your Costs</h3>
+        
+        <ul>
+            <li>Maintain a healthy BMI through diet and exercise</li>
+            <li>Quit smoking or avoid starting</li>
+            <li>Consider different coverage options based on your needs</li>
+            <li>Research insurance providers in your region for competitive rates</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Hidden data for chart -->
+<script id="prediction-data" type="application/json">
+    {{ prediction|tojson }}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize chart
+        const resultChart = document.getElementById('result-chart');
+        
+        if (resultChart && window.Chart) {
+            // Get prediction data
+            const predictionDataElement = document.getElementById('prediction-data');
+            if (!predictionDataElement) return;
+            
+            try {
+                const predictionData = JSON.parse(predictionDataElement.textContent);
+                
+                // Create chart
+                new Chart(resultChart, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Age', 'BMI', 'Children', 'Smoker', 'Region'],
+                        datasets: [{
+                            label: 'Factor Impact on Cost',
+                            data: [
+                                predictionData.features.age * 250,
+                                predictionData.features.bmi * 300,
+                                predictionData.features.children * 1000,
+                                predictionData.features.smoker === 'Yes' ? 20000 : 0,
+                                2000
+                            ],
+                            backgroundColor: [
+                                'rgba(74, 107, 175, 0.7)',
+                                'rgba(255, 107, 107, 0.7)',
+                                'rgba(75, 192, 192, 0.7)',
+                                'rgba(255, 159, 64, 0.7)',
+                                'rgba(153, 102, 255, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(74, 107, 175, 1)',
+                                'rgba(255, 107, 107, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 159, 64, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Estimated Impact on Cost ($)'
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error initializing chart:', error);
+            }
+        }
+    });
+</script>
+{% endblock %}
